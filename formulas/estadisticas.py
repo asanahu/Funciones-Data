@@ -106,3 +106,40 @@ def matriz_correlacion(df: pd.DataFrame, imprimir: bool = False) -> Optional[pd.
     return corr
 
 
+def resumen_dataset(df: pd.DataFrame, imprimir: bool = True) -> pd.DataFrame:
+    """Obtener un resumen general de un DataFrame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame de entrada.
+    imprimir : bool, optional
+        Mostrar o no el resumen por pantalla.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Información resumida del DataFrame.
+
+    Examples
+    --------
+    >>> resumen = resumen_dataset(df)
+    """
+    info = {
+        "Filas": len(df),
+        "Columnas": df.shape[1],
+        "Porcentaje Nulos": (df.isnull().sum().sum() / df.size) * 100,
+    }
+    tipos = df.dtypes.to_frame("Tipo")
+    resumen = tipos.copy()
+    resumen["Nulos"] = df.isnull().sum()
+    if imprimir:
+        print("Resumen general del DataFrame:")
+        print(info)
+        print("\nTipos y nulos por columna:")
+        print(resumen)
+        print("\nPrimeras filas:")
+        print(df.head())
+    return resumen
+
+
