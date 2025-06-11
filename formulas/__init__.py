@@ -5,7 +5,7 @@ from .excel_utils import leer_excel, escribir_excel, cargar_excel
 from .csv_utils import cargar_csv, limpiar_columnas
 from .json_utils import cargar_json
 from .sql_utils import crear_conexion, leer_query, escribir_df
-from .pandas_transform import combinar, pivotear, limpiar_nombres, convertir_a_datetime, detectar_outliers_iqr
+from .pandas_transform import combinar, pivotar, limpiar_nombres, convertir_a_datetime, detectar_outliers_iqr
 from .estadisticas import nulos, describir_columnas, matriz_correlacion
 from .visualizaciones import grafico_lineas
 from .file_utils import cargar_archivo
@@ -25,7 +25,7 @@ __all__ = [
     "convertir_a_datetime",
     "detectar_outliers_iqr",
     "combinar",
-    "pivotear",
+    "pivotar",
     "limpiar_nombres",
     "cargar_archivo",
     "cargar_html",

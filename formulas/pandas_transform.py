@@ -1,6 +1,6 @@
 """Transformaciones comunes con pandas."""
 
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional, Union, Callable
 
 import pandas as pd
 
@@ -34,12 +34,12 @@ def combinar(
     return pd.merge(df1, df2, on=on, how=how)
 
 
-def pivotear(
+def pivotar(
     df: pd.DataFrame,
     index: Union[str, Iterable[str]],
     columns: Union[str, Iterable[str]],
     values: Union[str, Iterable[str]],
-    aggfunc: str = "sum",
+    aggfunc: Union[str, Callable, Iterable[Union[str, Callable]]] = "sum",
 ) -> pd.DataFrame:
     """Crear tabla dinámica.
 
@@ -57,7 +57,13 @@ def pivotear(
     pandas.DataFrame
         Tabla dinámica resultante.
     """
-    tabla = pd.pivot_table(df, index=index, columns=columns, values=values, aggfunc=aggfunc)
+    tabla = pd.pivot_table(
+        df,
+        index=index,
+        columns=columns,
+        values=values,
+        aggfunc=aggfunc,
+    )
     return tabla.reset_index()
 
 

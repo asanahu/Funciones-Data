@@ -46,8 +46,8 @@ def nulos(df: pd.DataFrame, ordenar_por: str = "Nulos", imprimir: bool = True) -
     return resumen
 
 
-def describir_columnas(df: pd.DataFrame, columnas: Iterable[str]) -> None:
-    """Mostrar información resumida de un conjunto de columnas.
+def describir_columnas(df: pd.DataFrame, columnas: Iterable[str]) -> dict[str, pd.DataFrame]:
+    """Mostrar y resumir información de un conjunto de columnas.
 
     Parameters
     ----------
@@ -60,17 +60,21 @@ def describir_columnas(df: pd.DataFrame, columnas: Iterable[str]) -> None:
     --------
     >>> describir_columnas(df, ["col1", "col2"])
     """
+    resumen: dict[str, pd.DataFrame] = {}
     for col in columnas:
         if col not in df.columns:
             print(f"La columna {col} no existe en el DataFrame")
             continue
         print(f"\nColumna: {col} - Tipo de datos: {df[col].dtype}")
-        print(f"Valores nulos: {df[col].isnull().sum()}  -  Valores distintos: {df[col].nunique()}")
+        print(
+            f"Valores nulos: {df[col].isnull().sum()}  -  Valores distintos: {df[col].nunique()}"
+        )
         print("Valores más frecuentes:")
         top = df[col].value_counts().head(10)
         for valor, cuenta in top.items():
             print(f"{valor:<20} {cuenta}")
-
+        resumen[col] = top.reset_index().rename(columns={"index": "valor", col: "frecuencia"})
+    return resumen
 
 def matriz_correlacion(df: pd.DataFrame, imprimir: bool = False) -> Optional[pd.DataFrame]:
     """Calcular y mostrar la matriz de correlación para columnas numéricas.
