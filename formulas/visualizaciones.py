@@ -265,4 +265,56 @@ def hist_pos_neg_feat(
         )
 
 
+def histogramas_df(df: pd.DataFrame, bins: int = 30) -> None:
+    """Representar histogramas de todas las columnas de ``df``.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Conjunto de datos completo, incluida la variable objetivo.
+    bins : int, optional
+        Número de divisiones (bins) del histograma.
+
+    Examples
+    --------
+    >>> histogramas_df(df)
+    """
+
+    fig_por_fila = 5
+    tamanio_fig = 4
+    num_cols = len(df.columns)
+    num_filas = int(np.ceil(num_cols / fig_por_fila))
+    plt.figure(figsize=(fig_por_fila * tamanio_fig + 3, num_filas * tamanio_fig + 3))
+    for i, column in enumerate(df.columns, 1):
+        plt.subplot(num_filas, fig_por_fila, i)
+        sns.histplot(df[column], bins=bins)
+        plt.title(f"Distribuci\u00f3n var {column}")
+    plt.tight_layout()
+    plt.show()
+
+
+def boxplot_variables(x: pd.DataFrame, rotacion: int = 90) -> None:
+    """Mostrar un boxplot de todas las variables de ``x``.
+
+    Parameters
+    ----------
+    x : pandas.DataFrame
+        Variables independientes ya normalizadas.
+    rotacion : int, optional
+        Grados de rotaci\u00f3n para las etiquetas del eje X.
+
+    Examples
+    --------
+    >>> boxplot_variables(X_train)
+    """
+
+    plt.figure(figsize=(15, 7))
+    ax = sns.boxplot(data=x)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=rotacion)
+    plt.title("Representaci\u00f3n de cajas de las variables independientes X")
+    plt.ylabel("Valor de la variable normalizada")
+    plt.xlabel("Nombre de la variable")
+    plt.tight_layout()
+    plt.show()
+
 
