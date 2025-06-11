@@ -188,7 +188,7 @@ def represento_doble_hist(
     label_0: str = "Clase 0",
     density: bool = False,
 ) -> None:
-    """Representar dos histogramas en la misma figura.
+    """Representar dos histogramas superpuestos en una misma figura. Es útil para comparar cómo se distribuyen los valores de una variable entre dos grupos o clases (por ejemplo, clientes que compran vs. los que no compran).
 
     Parameters
     ----------
@@ -222,7 +222,7 @@ def hist_pos_neg_feat(
     nbins: int = 11,
     targets: tuple[int, int] = (0, 1),
 ) -> None:
-    """Histograma comparativo de cada feature separado por clase.
+    """Automatizar la visualización de histogramas de todas las variables (columnas) de un DataFrame x, comparando las distribuciones entre dos clases especificadas en y
 
     Parameters
     ----------
