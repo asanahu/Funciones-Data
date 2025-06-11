@@ -34,12 +34,18 @@ pip install -r requirements.txt
 Importa las funciones que necesites desde `formulas`:
 
 ```python
-from formulas import cargar_csv, nulos, grafico_lineas
+from formulas import cargar_csv, nulos, grafico_lineas, convertir_a_datetime
 
 df = cargar_csv("datos.csv")
 resumen = nulos(df)
+df = convertir_a_datetime(df, "fecha")
 grafico_lineas(df, "fecha", "ventas", titulo="Ventas diarias")
 ```
 
 Consulta cada módulo para obtener más detalles y ejemplos de uso.
+
+## Nuevas transformaciones
+
+El módulo `pandas_transform` incluye utilidades para convertir columnas de
+fechas y detectar valores atípicos con el método IQR, entre otras funciones.
 

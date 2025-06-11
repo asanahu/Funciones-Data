@@ -6,6 +6,7 @@ nuevas funcionalidades.
 """
 
 import os
+from typing import Union
 from formulas import (
     cargar_csv,
     cargar_json,
@@ -16,7 +17,7 @@ from formulas import (
 )
 
 
-def cargar_archivo(nombre_archivo):
+def cargar_archivo(nombre_archivo: Union[str, os.PathLike]):
     """Cargar un archivo según su extensión."""
     extension = os.path.splitext(nombre_archivo)[1].lower()
     if extension == ".csv":
