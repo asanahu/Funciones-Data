@@ -1,13 +1,27 @@
 """Funciones para trabajar con archivos o URLs de HTML."""
 
+from typing import List, Union
+
 import os
 import pandas as pd
 
 
-def cargar_html(fuente):
+def cargar_html(fuente: Union[str, os.PathLike]) -> List[pd.DataFrame]:
     """Cargar tablas de una URL o archivo HTML.
 
-    Devuelve una lista de DataFrames con las tablas encontradas.
+    Parameters
+    ----------
+    fuente : str or PathLike
+        Ruta local o URL de la página a analizar.
+
+    Returns
+    -------
+    list of pandas.DataFrame
+        Todas las tablas encontradas.
+
+    Examples
+    --------
+    >>> tablas = cargar_html("pagina.html")
     """
     try:
         if fuente.startswith("http://") or fuente.startswith("https://"):

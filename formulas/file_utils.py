@@ -2,14 +2,30 @@
 
 import os
 import pandas as pd
+from typing import Union
 from .csv_utils import cargar_csv
 from .json_utils import cargar_json
 from .excel_utils import leer_excel
 from .html_utils import cargar_html
 
 
-def cargar_archivo(nombre_archivo):
-    """Cargar un archivo según su extensión."""
+def cargar_archivo(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
+    """Cargar un archivo según su extensión.
+
+    Parameters
+    ----------
+    nombre_archivo : str or PathLike
+        Ruta del archivo a cargar.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Datos cargados del archivo.
+
+    Examples
+    --------
+    >>> df = cargar_archivo("datos.csv")
+    """
     extension = os.path.splitext(nombre_archivo)[1].lower()
     ruta_archivo = os.path.abspath(nombre_archivo)
     if extension == ".csv":
