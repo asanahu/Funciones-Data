@@ -1,19 +1,9 @@
-"""Funciones útiles para tareas de ETL (compatibilidad).
-
-Este módulo mantiene la interfaz antigua delegando en las funciones del paquete
-`formulas`. Puedes importar directamente desde `formulas` para obtener todas las
-nuevas funcionalidades.
-"""
+"""Funciones genéricas para detección de archivos."""
 
 import os
-from formulas import (
-    cargar_csv,
-    cargar_json,
-    leer_excel,
-    nulos,
-    describir_columnas,
-    matriz_correlacion,
-)
+from .csv_utils import cargar_csv
+from .json_utils import cargar_json
+from .excel_utils import leer_excel
 
 
 def cargar_archivo(nombre_archivo):
@@ -26,3 +16,4 @@ def cargar_archivo(nombre_archivo):
     if extension in [".xls", ".xlsx"]:
         return leer_excel(nombre_archivo)
     raise ValueError(f"Formato de archivo no soportado: {extension}")
+
