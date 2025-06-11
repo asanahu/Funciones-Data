@@ -38,6 +38,7 @@ from .visualizaciones import (
 )
 from .file_utils import cargar_archivo
 from .html_utils import cargar_html
+from .model_utils import dividir_train_test, estandarizar_datos
 
 __all__ = [
     "__version__",
@@ -75,6 +76,8 @@ __all__ = [
     "relaciones_vs_target",
     "represento_doble_hist",
     "hist_pos_neg_feat",
+    "dividir_train_test",
+    "estandarizar_datos",
     "histogramas_df",
     "boxplot_variables",
 ]
