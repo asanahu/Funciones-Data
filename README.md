@@ -61,3 +61,18 @@ one-hot encoding.
 El módulo `estadisticas` ahora cuenta con `resumen_dataset` para obtener de un
 vistazo las dimensiones, tipos y porcentaje de nulos de un DataFrame.
 
+## Estandarización y división en train/test
+
+El módulo `model_utils` incorpora herramientas básicas para preparar datos de
+modelado. Con `dividir_train_test` puedes separar un DataFrame en conjuntos de
+entrenamiento y prueba, mientras que `estandarizar_datos` aplica un
+`StandardScaler` de *scikit-learn* a las columnas numéricas.
+
+```python
+from formulas import dividir_train_test, estandarizar_datos
+
+X_train, X_test, y_train, y_test = dividir_train_test(df, "objetivo")
+X_train, scaler = estandarizar_datos(X_train)
+X_test[scaler.feature_names_in_] = scaler.transform(X_test[scaler.feature_names_in_])
+```
+

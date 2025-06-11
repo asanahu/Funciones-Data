@@ -4,3 +4,4 @@ sqlalchemy
 seaborn
 matplotlib
 plotly
+scikit-learn
