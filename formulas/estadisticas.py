@@ -148,30 +148,48 @@ def resumen_dataset(df: pd.DataFrame, imprimir: bool = True) -> pd.DataFrame:
 def resumen_columnas(df: pd.DataFrame) -> pd.DataFrame:
     """Obtener un resumen detallado de cada columna de un ``DataFrame``.
 
-    Se calculan estadísticas básicas, recuento de valores únicos y nulos,
-    ejemplo de valor, asimetría y curtosis para columnas numéricas.
+    El resultado contiene estadísticas descriptivas, tipo de dato,
+    recuento de valores únicos, nulos y duplicados, así como un ejemplo de
+    valor no nulo.  Para las columnas numéricas se calcula además la
+    asimetría y la curtosis.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Conjunto de datos a analizar.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Tabla con la información resumida por columna.
+
+    Examples
+    --------
+    >>> resumen = resumen_columnas(df)
+    >>> resumen.head()
     """
 
-    # Estadísticas básicas de ``pandas`` transpuestas para acceder por columna
+    # Estadísticas básicas generadas por ``pandas`` y transpuestas para
+    # trabajar por columna en lugar de por fila
     column_info = df.describe(include="all").T
 
-    # Información adicional de tipo de dato y conteos
+    # Añadimos información adicional de tipo de dato y distintos conteos
     column_info["Nombre"] = column_info.index
     column_info["Tipo de Dato"] = df.dtypes
     column_info["Valores Únicos"] = df.nunique()
     column_info["Valores Nulos"] = df.isnull().sum()
     column_info["Valores duplicados"] = df.duplicated().sum()
 
-    # Ejemplo de valor no nulo por columna
+    # Ejemplo de valor no nulo por columna (si existe)
     column_info["Ejemplo de Valor"] = df.apply(
         lambda x: x.dropna().iloc[0] if not x.dropna().empty else "-", axis=0
     )
 
-    # Asimetría y curtosis para columnas numéricas
+    # Asimetría y curtosis solo aplican a columnas numéricas
     column_info["Asimetría"] = df.select_dtypes(include="number").skew()
     column_info["Curtosis"] = df.select_dtypes(include="number").kurtosis()
 
-    # Orden deseado de las columnas para facilitar la lectura
+    # Orden de columnas para una visualización más cómoda
     columnas_deseadas = [
         "Nombre",
         "Tipo de Dato",
@@ -189,6 +207,7 @@ def resumen_columnas(df: pd.DataFrame) -> pd.DataFrame:
         "Asimetría",
         "Curtosis",
     ]
+    # Sólo conservamos las columnas presentes en ``column_info``
     column_info = column_info.reindex(
         columns=[col for col in columnas_deseadas if col in column_info.columns]
     )
@@ -204,34 +223,52 @@ def resumen_columnas(df: pd.DataFrame) -> pd.DataFrame:
     return column_info
 
 
-def comprueba_normalidad(
-    df: pd.DataFrame, return_type: str = "axes", title: str = "Comprobación de normalidad"
-) -> pd.DataFrame:
-    """Comprobar visualmente la normalidad de cada columna numérica.
+def comprueba_normalidad(df: pd.DataFrame, titulo: str = "Comprobación de normalidad") -> pd.DataFrame:
+    """Evaluar la normalidad de cada columna numérica de ``df``.
 
-    Genera un gráfico QQ por columna y devuelve el estadístico y *p-value*
-    del test de Shapiro-Wilk.
+    Se representan los *Q-Q plots* de todas las columnas y se calcula el
+    test de Shapiro-Wilk.  El DataFrame resultante incluye el estadístico y el
+    ``p-value`` de cada variable.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Datos a evaluar. Solo se tendrán en cuenta las columnas numéricas.
+    titulo : str, optional
+        Texto mostrado como título de la figura.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Resultados del test de Shapiro-Wilk por columna.
+
+    Examples
+    --------
+    >>> comprueba_normalidad(df[["edad", "ingresos"]])
     """
 
+    # Número de gráficos y distribución en la figura
     fig_tot = len(df.columns)
     fig_por_fila = 3.0
     tamanio_fig = 4.0
     num_filas = int(np.ceil(fig_tot / fig_por_fila))
 
+    # Creamos la figura donde se dibujarán los Q-Q plots
     plt.figure(figsize=(fig_por_fila * tamanio_fig + 5, num_filas * tamanio_fig + 2))
-    shapiro_test: dict[str, tuple[float, float]] = {}
+    resultados: dict[str, tuple[float, float]] = {}
     for i, col in enumerate(df.columns):
         ax = plt.subplot(num_filas, fig_por_fila, i + 1)
         probplot(x=df[col], dist=norm, plot=ax)
         plt.title(col)
-        shapiro_test[col] = shapiro(df[col])
+        # Guardamos el estadístico y p-valor del test de Shapiro
+        resultados[col] = shapiro(df[col])
 
-    plt.suptitle(title)
+    plt.suptitle(titulo)
     plt.show()
 
-    shapiro_test = (
-        pd.DataFrame(shapiro_test, index=["Test Statistic", "p-value"]).transpose()
+    resultados = (
+        pd.DataFrame(resultados, index=["Test Statistic", "p-value"]).transpose()
     )
-    return shapiro_test
+    return resultados
 
 
