@@ -39,6 +39,12 @@ from .visualizaciones import (
 from .file_utils import cargar_archivo
 from .html_utils import cargar_html
 from .model_utils import dividir_train_test, estandarizar_datos
+from .modelos import (
+    entrenar_regresion_logistica,
+    entrenar_mlp,
+    entrenar_random_forest,
+    evaluar_modelo,
+)
 
 __all__ = [
     "__version__",
@@ -80,5 +86,9 @@ __all__ = [
     "estandarizar_datos",
     "histogramas_df",
     "boxplot_variables",
+    "entrenar_regresion_logistica",
+    "entrenar_mlp",
+    "entrenar_random_forest",
+    "evaluar_modelo",
 ]
 
