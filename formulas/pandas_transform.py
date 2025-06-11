@@ -139,3 +139,104 @@ def detectar_outliers_iqr(df: pd.DataFrame, columna: str, factor: float = 1.5) -
     return (df[columna] < lower) | (df[columna] > upper)
 
 
+def eliminar_duplicados(
+    df: pd.DataFrame, subset: Optional[Union[str, Iterable[str]]] = None,
+    keep: str = "first", mensaje: bool = True
+) -> pd.DataFrame:
+    """Eliminar filas duplicadas del DataFrame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame de entrada.
+    subset : str or iterable of str, optional
+        Columnas a considerar para detectar duplicados.
+    keep : {"first", "last", False}, optional
+        Cómo manejar las filas duplicadas.
+    mensaje : bool, optional
+        Mostrar por pantalla cuántas filas se eliminaron.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame sin duplicados.
+
+    Examples
+    --------
+    >>> df = eliminar_duplicados(df)
+    """
+    df = df.copy()
+    antes = len(df)
+    df = df.drop_duplicates(subset=subset, keep=keep)
+    despues = len(df)
+    if mensaje:
+        print(f"Filas eliminadas: {antes - despues}")
+    return df
+
+
+def imputar_nulos(
+    df: pd.DataFrame,
+    estrategia: str = "media",
+    columnas: Optional[Union[str, Iterable[str]]] = None,
+    valor: Optional[float] = None,
+) -> pd.DataFrame:
+    """Imputar valores nulos de forma sencilla.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame de entrada.
+    estrategia : {"media", "mediana", "moda", "constante"}, optional
+        Estrategia de imputación.
+    columnas : str or iterable of str, optional
+        Columnas a procesar. Por defecto solo numéricas.
+    valor : float, optional
+        Valor a utilizar si ``estrategia`` es ``"constante"``.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame con valores imputados.
+    """
+    df = df.copy()
+    if columnas is None:
+        columnas = df.select_dtypes(include="number").columns
+    if isinstance(columnas, str):
+        columnas = [columnas]
+    for col in columnas:
+        if estrategia == "media":
+            valor_imputado = df[col].mean()
+        elif estrategia == "mediana":
+            valor_imputado = df[col].median()
+        elif estrategia == "moda":
+            valor_imputado = df[col].mode().iloc[0]
+        elif estrategia == "constante":
+            valor_imputado = valor
+        else:
+            raise ValueError("Estrategia no soportada")
+        df[col] = df[col].fillna(valor_imputado)
+    return df
+
+
+def codificar_onehot(df: pd.DataFrame, columnas: Iterable[str]) -> pd.DataFrame:
+    """Aplicar one-hot encoding a columnas categóricas.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame de entrada.
+    columnas : iterable of str
+        Columnas categóricas a codificar.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame con las columnas codificadas.
+
+    Examples
+    --------
+    >>> df = codificar_onehot(df, ["genero", "pais"])
+    """
+    return pd.get_dummies(df, columns=list(columnas), drop_first=False)
+
+
