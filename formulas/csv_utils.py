@@ -25,14 +25,26 @@ def cargar_csv(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
     Archivo CSV cargado: datos.csv
     >>> df.head()
     """
-    ruta_archivo = os.path.abspath(nombre_archivo)
-    df = pd.read_csv(ruta_archivo)
-    print(f"Archivo CSV cargado: {os.path.basename(ruta_archivo)}")
-    print("\nPrimeras filas del dataset:")
-    print(df.head())
-    print("\nResumen estadístico del DataFrame:")
-    print(df.describe())
-    return df
+    try:
+        ruta_archivo = os.path.abspath(nombre_archivo)
+        nombre_archivo_simple = os.path.basename(ruta_archivo)
+        df = pd.read_csv(ruta_archivo)
+        print(f"Archivo CSV cargado: {nombre_archivo_simple}")
+        print("\nPrimeras filas del dataset:")
+        print(df.head())
+        print("\nResumen estadístico del DataFrame:")
+        print(df.describe())
+        return df
+    except FileNotFoundError:
+        print(f"Error: No se pudo encontrar el archivo '{nombre_archivo}'")
+    except pd.errors.EmptyDataError:
+        print(f"Error: El archivo '{nombre_archivo}' está vacío")
+    except ValueError:
+        print(
+            f"Error: No se pudo cargar el archivo '{nombre_archivo}'. Verifique si el archivo está en formato CSV válido."
+        )
+    except Exception as e:
+        print(f"Error al cargar el archivo: {str(e)}")
 
 
 def limpiar_columnas(df: pd.DataFrame) -> pd.DataFrame:
