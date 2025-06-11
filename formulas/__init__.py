@@ -20,6 +20,8 @@ from .estadisticas import (
     describir_columnas,
     matriz_correlacion,
     resumen_dataset,
+    resumen_columnas,
+    comprueba_normalidad,
 )
 from .visualizaciones import (
     grafico_lineas,
@@ -27,6 +29,10 @@ from .visualizaciones import (
     grafico_dispersion,
     grafico_histograma,
     grafico_interactivo_lineas,
+    correlacion,
+    relaciones_vs_target,
+    represento_doble_hist,
+    hist_pos_neg_feat,
 )
 from .file_utils import cargar_archivo
 from .html_utils import cargar_html
@@ -56,10 +62,16 @@ __all__ = [
     "describir_columnas",
     "matriz_correlacion",
     "resumen_dataset",
+    "resumen_columnas",
+    "comprueba_normalidad",
     "grafico_lineas",
     "grafico_barras",
     "grafico_dispersion",
     "grafico_histograma",
     "grafico_interactivo_lineas",
+    "correlacion",
+    "relaciones_vs_target",
+    "represento_doble_hist",
+    "hist_pos_neg_feat",
 ]
 
