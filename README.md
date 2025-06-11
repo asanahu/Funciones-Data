@@ -76,3 +76,28 @@ X_train, scaler = estandarizar_datos(X_train)
 X_test[scaler.feature_names_in_] = scaler.transform(X_test[scaler.feature_names_in_])
 ```
 
+## Modelos de clasificación
+
+Para entrenar y evaluar modelos de clasificación se incluyen utilidades para
+regresión logística, redes neuronales (*MLPClassifier*) y bosques aleatorios.
+Al evaluar un modelo se muestran automáticamente la matriz de confusión y la
+curva ROC junto con métricas de *precision*, *recall* y *accuracy*.
+
+```python
+from formulas import (
+    entrenar_regresion_logistica,
+    entrenar_mlp,
+    entrenar_random_forest,
+    evaluar_modelo,
+    dividir_train_test,
+)
+
+X_train, X_test, y_train, y_test = dividir_train_test(df, "objetivo")
+modelo = entrenar_regresion_logistica(X_train, y_train)
+metricas = evaluar_modelo(modelo, X_test, y_test)
+print(metricas)
+```
+
+De forma análoga pueden usarse `entrenar_mlp` o `entrenar_random_forest`
+pasando los parámetros deseados.
+
