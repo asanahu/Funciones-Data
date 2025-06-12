@@ -6,7 +6,9 @@ import os
 import pandas as pd
 
 
-def cargar_html(fuente: Union[str, os.PathLike]) -> List[pd.DataFrame]:
+def cargar_html(
+    fuente: Union[str, os.PathLike], imprimir: bool = True, **kwargs
+) -> List[pd.DataFrame]:
     """Cargar tablas de una URL o archivo HTML.
 
     Parameters
@@ -25,18 +27,23 @@ def cargar_html(fuente: Union[str, os.PathLike]) -> List[pd.DataFrame]:
     """
     try:
         if fuente.startswith("http://") or fuente.startswith("https://"):
-            print(f"Cargando tablas desde la URL: {fuente}")
-            dfs = pd.read_html(fuente)
+            if imprimir:
+                print(f"Cargando tablas desde la URL: {fuente}")
+            dfs = pd.read_html(fuente, **kwargs)
         else:
             ruta_archivo = os.path.abspath(fuente)
             nombre_archivo_simple = os.path.basename(ruta_archivo)
-            print(f"Cargando tablas desde el archivo: {nombre_archivo_simple}")
-            dfs = pd.read_html(ruta_archivo)
+            if imprimir:
+                print(f"Cargando tablas desde el archivo: {nombre_archivo_simple}")
+            dfs = pd.read_html(ruta_archivo, **kwargs)
 
-        print(f"\nNúmero de tablas encontradas: {len(dfs)}")
-        for i, df in enumerate(dfs):
-            print(f"\nTabla {i+1}:")
-            print(df.head())
+        if imprimir:
+            print(f"\nNúmero de tablas encontradas: {len(dfs)}")
+            for i, df in enumerate(dfs):
+                print(f"\nTabla {i+1} - forma: {df.shape}")
+                print(df.head())
+                print("Tipos de datos:")
+                print(df.dtypes)
         return dfs
 
     except FileNotFoundError:

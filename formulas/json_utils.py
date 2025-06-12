@@ -7,8 +7,10 @@ import json
 import pandas as pd
 
 
-def cargar_json(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
-    """Leer un archivo JSON y mostrar un resumen.
+def cargar_json(
+    nombre_archivo: Union[str, os.PathLike], imprimir: bool = True, **kwargs
+) -> pd.DataFrame:
+    """Leer un archivo JSON.
 
     Parameters
     ----------
@@ -27,12 +29,14 @@ def cargar_json(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
     try:
         ruta_archivo = os.path.abspath(nombre_archivo)
         nombre_archivo_simple = os.path.basename(ruta_archivo)
-        df = pd.read_json(ruta_archivo)
-        print(f"Archivo JSON cargado: {nombre_archivo_simple}")
-        print("\nPrimeras filas del dataset:")
-        print(df.head())
-        print("\nResumen estadístico del DataFrame:")
-        print(df.describe())
+        df = pd.read_json(ruta_archivo, **kwargs)
+        if imprimir:
+            print(f"Archivo JSON cargado: {nombre_archivo_simple}")
+            print(f"Forma del DataFrame: {df.shape}")
+            print("\nPrimeras filas del dataset:")
+            print(df.head())
+            print("\nTipos de datos:")
+            print(df.dtypes)
         return df
     except FileNotFoundError:
         print(f"Error: No se pudo encontrar el archivo '{nombre_archivo}'")

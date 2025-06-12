@@ -5,7 +5,7 @@ import pandas as pd
 from typing import Union
 from .csv_utils import cargar_csv
 from .json_utils import cargar_json
-from .excel_utils import leer_excel
+from .excel_utils import cargar_excel
 from .html_utils import cargar_html
 
 
@@ -33,7 +33,7 @@ def cargar_archivo(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
     if extension == ".json":
         return cargar_json(ruta_archivo)
     if extension in [".xls", ".xlsx"]:
-        return leer_excel(ruta_archivo)
+        return cargar_excel(ruta_archivo)
     if extension in [".htm", ".html"]:
         return cargar_html(ruta_archivo)
     if extension == ".parquet":
