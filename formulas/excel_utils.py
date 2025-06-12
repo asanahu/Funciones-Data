@@ -6,36 +6,13 @@ import os
 import pandas as pd
 
 
-def leer_excel(ruta_archivo: Union[str, os.PathLike], hoja: Optional[str] = None) -> pd.DataFrame:
-    """Leer un archivo de Excel y devolver un :class:`pandas.DataFrame`.
-
-    Parameters
-    ----------
-    ruta_archivo : str or PathLike
-        Ruta del archivo a leer.
-    hoja : str, optional
-        Nombre de la hoja a cargar. Si se omite se lee la primera.
-
-    Returns
-    -------
-    pandas.DataFrame
-        Datos del archivo Excel.
-
-    Examples
-    --------
-    >>> df = leer_excel("archivo.xlsx", hoja="Datos")
-    >>> len(df)
-    10
-    """
-    if hoja:
-        df = pd.read_excel(ruta_archivo, sheet_name=hoja)
-    else:
-        df = pd.read_excel(ruta_archivo)
-    return df
-
-
-def cargar_excel(nombre_archivo: Union[str, os.PathLike], hoja: Optional[str] = None) -> pd.DataFrame:
-    """Cargar un archivo de Excel e imprimir un resumen.
+def cargar_excel(
+    nombre_archivo: Union[str, os.PathLike],
+    hoja: Optional[str] = None,
+    imprimir: bool = True,
+    **kwargs,
+) -> pd.DataFrame:
+    """Cargar un archivo de Excel.
 
     Parameters
     ----------
@@ -58,15 +35,17 @@ def cargar_excel(nombre_archivo: Union[str, os.PathLike], hoja: Optional[str] = 
         ruta_archivo = os.path.abspath(nombre_archivo)
         nombre_archivo_simple = os.path.basename(ruta_archivo)
         if hoja:
-            df = pd.read_excel(ruta_archivo, sheet_name=hoja)
+            df = pd.read_excel(ruta_archivo, sheet_name=hoja, **kwargs)
         else:
-            df = pd.read_excel(ruta_archivo)
+            df = pd.read_excel(ruta_archivo, **kwargs)
 
-        print(f"Archivo Excel cargado: {nombre_archivo_simple}")
-        print("\nPrimeras filas del dataset:")
-        print(df.head())
-        print("\nResumen estadístico del DataFrame:")
-        print(df.describe())
+        if imprimir:
+            print(f"Archivo Excel cargado: {nombre_archivo_simple}")
+            print(f"Forma del DataFrame: {df.shape}")
+            print("\nPrimeras filas del dataset:")
+            print(df.head())
+            print("\nTipos de datos:")
+            print(df.dtypes)
         return df
     except FileNotFoundError:
         print(
@@ -78,6 +57,10 @@ def cargar_excel(nombre_archivo: Union[str, os.PathLike], hoja: Optional[str] = 
         )
     except Exception as e:
         print(f"Error al cargar el archivo: {str(e)}")
+
+
+# Alias para mantener compatibilidad con versiones anteriores
+leer_excel = cargar_excel
 
 
 def escribir_excel(df: pd.DataFrame, ruta_archivo: Union[str, os.PathLike], hoja: str = "Sheet1") -> None:

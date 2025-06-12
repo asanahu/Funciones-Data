@@ -6,8 +6,10 @@ import os
 import pandas as pd
 
 
-def cargar_csv(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
-    """Cargar un archivo CSV y mostrar un resumen inicial.
+def cargar_csv(
+    nombre_archivo: Union[str, os.PathLike], imprimir: bool = True, **kwargs
+) -> pd.DataFrame:
+    """Cargar un archivo CSV.
 
     Parameters
     ----------
@@ -28,12 +30,14 @@ def cargar_csv(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
     try:
         ruta_archivo = os.path.abspath(nombre_archivo)
         nombre_archivo_simple = os.path.basename(ruta_archivo)
-        df = pd.read_csv(ruta_archivo)
-        print(f"Archivo CSV cargado: {nombre_archivo_simple}")
-        print("\nPrimeras filas del dataset:")
-        print(df.head())
-        print("\nResumen estadístico del DataFrame:")
-        print(df.describe())
+        df = pd.read_csv(ruta_archivo, **kwargs)
+        if imprimir:
+            print(f"Archivo CSV cargado: {nombre_archivo_simple}")
+            print(f"Forma del DataFrame: {df.shape}")
+            print("\nPrimeras filas del dataset:")
+            print(df.head())
+            print("\nTipos de datos:")
+            print(df.dtypes)
         return df
     except FileNotFoundError:
         print(f"Error: No se pudo encontrar el archivo '{nombre_archivo}'")

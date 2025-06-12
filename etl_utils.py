@@ -10,7 +10,7 @@ from typing import Union
 from formulas import (
     cargar_csv,
     cargar_json,
-    leer_excel,
+    cargar_excel,
     nulos,
     describir_columnas,
     matriz_correlacion,
@@ -25,5 +25,5 @@ def cargar_archivo(nombre_archivo: Union[str, os.PathLike]):
     if extension == ".json":
         return cargar_json(nombre_archivo)
     if extension in [".xls", ".xlsx"]:
-        return leer_excel(nombre_archivo)
+        return cargar_excel(nombre_archivo)
     raise ValueError(f"Formato de archivo no soportado: {extension}")
