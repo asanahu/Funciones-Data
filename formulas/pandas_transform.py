@@ -3,6 +3,9 @@
 from typing import Iterable, Optional, Union, Callable
 
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def combinar(
@@ -67,28 +70,45 @@ def pivotar(
     return tabla.reset_index()
 
 
-def limpiar_nombres(df: pd.DataFrame) -> pd.DataFrame:
-    """Convertir columnas a formato ``snake_case``.
+def limpiar_nombres(df: pd.DataFrame, formato: str = "snake_case") -> pd.DataFrame:
+    """Normalizar los nombres de columna.
+
+    Con ``formato="simple"`` se eliminan espacios iniciales/finales y se
+    convierten los nombres a minúsculas.  Con ``formato="snake_case"`` además se
+    reemplazan los espacios por ``_`` y se eliminan caracteres no alfanuméricos.
 
     Parameters
     ----------
     df : pandas.DataFrame
         DataFrame cuyas columnas se normalizarán.
+    formato : {"simple", "snake_case"}, optional
+        Estilo deseado para los nombres. Por defecto ``"snake_case"``.
 
     Returns
     -------
     pandas.DataFrame
-        Copia del DataFrame con nombres normalizados.
+        Copia del DataFrame con los nombres normalizados.
     """
     df = df.copy()
-    df.columns = (
-        df.columns
-        .str.strip()
-        .str.lower()
-        .str.replace(" ", "_")
-        .str.replace(r"[^a-z0-9_]+", "", regex=True)
-    )
+    if formato not in {"simple", "snake_case"}:
+        raise ValueError("formato debe ser 'simple' o 'snake_case'")
+    df.columns = df.columns.str.strip().str.lower()
+    if formato == "snake_case":
+        df.columns = (
+            df.columns
+            .str.replace(" ", "_")
+            .str.replace(r"[^a-z0-9_]+", "", regex=True)
+        )
     return df
+
+
+def limpiar_columnas(df: pd.DataFrame, formato: str = "simple") -> pd.DataFrame:
+    """Compatibilidad para ``limpiar_columnas`` existente.
+
+    Esta función delega en :func:`limpiar_nombres` para mantener retro
+    compatibilidad con el nombre anterior.
+    """
+    return limpiar_nombres(df, formato=formato)
 
 
 def convertir_a_datetime(df: pd.DataFrame, columnas: Union[str, Iterable[str]], formato: Optional[str] = None) -> pd.DataFrame:
@@ -109,7 +129,10 @@ def convertir_a_datetime(df: pd.DataFrame, columnas: Union[str, Iterable[str]], 
         DataFrame con las columnas convertidas.
     """
     df = df.copy()
-    for col in [columnas] if isinstance(columnas, str) else columnas:
+    cols = [columnas] if isinstance(columnas, str) else columnas
+    for col in cols:
+        if col not in df.columns:
+            raise KeyError(f"La columna '{col}' no existe en el DataFrame")
         df[col] = pd.to_datetime(df[col], format=formato, errors="coerce")
     return df
 
@@ -170,7 +193,7 @@ def eliminar_duplicados(
     df = df.drop_duplicates(subset=subset, keep=keep)
     despues = len(df)
     if mensaje:
-        print(f"Filas eliminadas: {antes - despues}")
+        logger.info("Filas eliminadas: %s", antes - despues)
     return df
 
 

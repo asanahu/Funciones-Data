@@ -4,6 +4,11 @@ from typing import Union
 
 import os
 import pandas as pd
+import logging
+
+from .pandas_transform import limpiar_nombres
+
+logger = logging.getLogger(__name__)
 
 
 def cargar_csv(
@@ -32,27 +37,26 @@ def cargar_csv(
         nombre_archivo_simple = os.path.basename(ruta_archivo)
         df = pd.read_csv(ruta_archivo, **kwargs)
         if imprimir:
-            print(f"Archivo CSV cargado: {nombre_archivo_simple}")
-            print(f"Forma del DataFrame: {df.shape}")
-            print("\nPrimeras filas del dataset:")
-            print(df.head())
-            print("\nTipos de datos:")
-            print(df.dtypes)
+            logger.info("Archivo CSV cargado: %s", nombre_archivo_simple)
+            logger.info("Forma del DataFrame: %s", df.shape)
+            logger.info("Primeras filas del dataset:\n%s", df.head())
+            logger.info("Tipos de datos:\n%s", df.dtypes)
         return df
     except FileNotFoundError:
-        print(f"Error: No se pudo encontrar el archivo '{nombre_archivo}'")
+        logger.error("Error: No se pudo encontrar el archivo '%s'", nombre_archivo)
     except pd.errors.EmptyDataError:
-        print(f"Error: El archivo '{nombre_archivo}' está vacío")
+        logger.error("Error: El archivo '%s' está vacío", nombre_archivo)
     except ValueError:
-        print(
-            f"Error: No se pudo cargar el archivo '{nombre_archivo}'. Verifique si el archivo está en formato CSV válido."
+        logger.error(
+            "Error: No se pudo cargar el archivo '%s'. Verifique si el archivo está en formato CSV válido.",
+            nombre_archivo,
         )
     except Exception as e:
-        print(f"Error al cargar el archivo: {str(e)}")
+        logger.error("Error al cargar el archivo: %s", str(e))
 
 
-def limpiar_columnas(df: pd.DataFrame) -> pd.DataFrame:
-    """Eliminar espacios y convertir nombres de columna a minúsculas.
+def limpiar_columnas(df: pd.DataFrame, formato: str = "simple") -> pd.DataFrame:
+    """Normalizar nombres de columnas.
 
     Parameters
     ----------
@@ -70,8 +74,6 @@ def limpiar_columnas(df: pd.DataFrame) -> pd.DataFrame:
     >>> list(df.columns)
     ['columna1', 'columna2']
     """
-    df = df.copy()
-    df.columns = df.columns.str.strip().str.lower()
-    return df
+    return limpiar_nombres(df, formato=formato)
 
 
