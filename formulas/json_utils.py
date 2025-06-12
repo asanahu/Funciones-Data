@@ -5,6 +5,9 @@ from typing import Union
 import os
 import json
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def cargar_json(
@@ -31,24 +34,24 @@ def cargar_json(
         nombre_archivo_simple = os.path.basename(ruta_archivo)
         df = pd.read_json(ruta_archivo, **kwargs)
         if imprimir:
-            print(f"Archivo JSON cargado: {nombre_archivo_simple}")
-            print(f"Forma del DataFrame: {df.shape}")
-            print("\nPrimeras filas del dataset:")
-            print(df.head())
-            print("\nTipos de datos:")
-            print(df.dtypes)
+            logger.info("Archivo JSON cargado: %s", nombre_archivo_simple)
+            logger.info("Forma del DataFrame: %s", df.shape)
+            logger.info("Primeras filas del dataset:\n%s", df.head())
+            logger.info("Tipos de datos:\n%s", df.dtypes)
         return df
     except FileNotFoundError:
-        print(f"Error: No se pudo encontrar el archivo '{nombre_archivo}'")
+        logger.error("Error: No se pudo encontrar el archivo '%s'", nombre_archivo)
     except ValueError:
-        print(
-            f"Error: No se pudo cargar el archivo '{nombre_archivo}'. Verifique si el archivo está en formato JSON válido o no está vacío."
+        logger.error(
+            "Error: No se pudo cargar el archivo '%s'. Verifique si el archivo está en formato JSON válido o no está vacío.",
+            nombre_archivo,
         )
     except json.JSONDecodeError:
-        print(
-            f"Error: No se pudo analizar el archivo '{nombre_archivo}'. Verifique que el contenido tenga un formato JSON válido."
+        logger.error(
+            "Error: No se pudo analizar el archivo '%s'. Verifique que el contenido tenga un formato JSON válido.",
+            nombre_archivo,
         )
     except Exception as e:
-        print(f"Error al cargar el archivo: {str(e)}")
+        logger.error("Error al cargar el archivo: %s", str(e))
 
 

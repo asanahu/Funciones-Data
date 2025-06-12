@@ -4,6 +4,9 @@ from typing import List, Union
 
 import os
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def cargar_html(
@@ -28,29 +31,31 @@ def cargar_html(
     try:
         if fuente.startswith("http://") or fuente.startswith("https://"):
             if imprimir:
-                print(f"Cargando tablas desde la URL: {fuente}")
+                logger.info("Cargando tablas desde la URL: %s", fuente)
             dfs = pd.read_html(fuente, **kwargs)
         else:
             ruta_archivo = os.path.abspath(fuente)
             nombre_archivo_simple = os.path.basename(ruta_archivo)
             if imprimir:
-                print(f"Cargando tablas desde el archivo: {nombre_archivo_simple}")
+                logger.info(
+                    "Cargando tablas desde el archivo: %s", nombre_archivo_simple
+                )
             dfs = pd.read_html(ruta_archivo, **kwargs)
 
         if imprimir:
-            print(f"\nNúmero de tablas encontradas: {len(dfs)}")
+            logger.info("\nNúmero de tablas encontradas: %s", len(dfs))
             for i, df in enumerate(dfs):
-                print(f"\nTabla {i+1} - forma: {df.shape}")
-                print(df.head())
-                print("Tipos de datos:")
-                print(df.dtypes)
+                logger.info("\nTabla %s - forma: %s", i + 1, df.shape)
+                logger.info("%s", df.head())
+                logger.info("Tipos de datos:\n%s", df.dtypes)
         return dfs
 
     except FileNotFoundError:
-        print(f"Error: No se pudo encontrar el archivo '{fuente}'")
+        logger.error("Error: No se pudo encontrar el archivo '%s'", fuente)
     except ValueError:
-        print(
-            f"Error: No se pudo cargar la fuente '{fuente}'. Verifique si contiene tablas HTML válidas."
+        logger.error(
+            "Error: No se pudo cargar la fuente '%s'. Verifique si contiene tablas HTML válidas.",
+            fuente,
         )
     except Exception as e:
-        print(f"Error al cargar la fuente: {str(e)}")
+        logger.error("Error al cargar la fuente: %s", str(e))

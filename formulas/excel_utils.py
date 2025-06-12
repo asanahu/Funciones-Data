@@ -4,6 +4,9 @@ from typing import Optional, Union
 
 import os
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def cargar_excel(
@@ -40,23 +43,22 @@ def cargar_excel(
             df = pd.read_excel(ruta_archivo, **kwargs)
 
         if imprimir:
-            print(f"Archivo Excel cargado: {nombre_archivo_simple}")
-            print(f"Forma del DataFrame: {df.shape}")
-            print("\nPrimeras filas del dataset:")
-            print(df.head())
-            print("\nTipos de datos:")
-            print(df.dtypes)
+            logger.info("Archivo Excel cargado: %s", nombre_archivo_simple)
+            logger.info("Forma del DataFrame: %s", df.shape)
+            logger.info("Primeras filas del dataset:\n%s", df.head())
+            logger.info("Tipos de datos:\n%s", df.dtypes)
         return df
     except FileNotFoundError:
-        print(
-            f"Error: No se pudo encontrar el archivo '{nombre_archivo_simple}'"
+        logger.error(
+            "Error: No se pudo encontrar el archivo '%s'", nombre_archivo_simple
         )
     except ValueError:
-        print(
-            f"Error: No se pudo cargar el archivo '{nombre_archivo_simple}'. Verifique si el archivo está en formato Excel válido."
+        logger.error(
+            "Error: No se pudo cargar el archivo '%s'. Verifique si el archivo está en formato Excel válido.",
+            nombre_archivo_simple,
         )
     except Exception as e:
-        print(f"Error al cargar el archivo: {str(e)}")
+        logger.error("Error al cargar el archivo: %s", str(e))
 
 
 # Alias para mantener compatibilidad con versiones anteriores
