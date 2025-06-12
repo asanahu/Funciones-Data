@@ -17,6 +17,17 @@ formulas/
     visualizaciones.py  # Gráficos rápidos (líneas, barras, scatter...)
 ```
 
+## Funciones principales
+
+| Función | Descripción breve |
+|---------|-------------------|
+| `cargar_csv` | Leer un archivo CSV en un DataFrame |
+| `limpiar_nombres` | Normaliza los nombres de las columnas |
+| `convertir_a_datetime` | Convierte columnas al tipo `datetime` |
+| `resumen_dataset` | Muestra un resumen rápido de filas, tipos y nulos |
+| `grafico_lineas` | Genera un gráfico de líneas con Matplotlib |
+| `dividir_train_test` | Separa un DataFrame en conjuntos de entrenamiento y prueba |
+
 Los notebooks de la carpeta `ejemplos` muestran cómo utilizar estas funciones
 para tareas habituales.
 
@@ -46,11 +57,37 @@ df = cargar_csv("datos.csv")
 resumen = nulos(df)
 df = convertir_a_datetime(df, "fecha")
 grafico_lineas(df, "fecha", "ventas", titulo="Ventas diarias")
+```
+
 grafico_barras(df, "producto", "ventas")
 ```
 
 Consulta cada módulo para obtener más detalles y ejemplos de uso.
 
+
+## Ejemplo completo
+
+```python
+from formulas import (
+    cargar_csv,
+    limpiar_nombres,
+    convertir_a_datetime,
+    resumen_dataset,
+    grafico_lineas,
+)
+
+# Carga
+df = cargar_csv("ventas.csv")
+
+# Limpieza
+df = limpiar_nombres(df)
+df = convertir_a_datetime(df, "fecha")
+
+# Análisis
+print(resumen_dataset(df))
+# Visualización
+grafico_lineas(df, "fecha", "ventas", titulo="Ventas diarias")
+```
 ## Nuevas transformaciones
 
 El módulo `pandas_transform` incluye utilidades para convertir columnas de
