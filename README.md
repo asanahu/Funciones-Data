@@ -27,6 +27,11 @@ formulas/
 | `resumen_dataset` | Muestra un resumen rápido de filas, tipos y nulos |
 | `grafico_lineas` | Genera un gráfico de líneas con Matplotlib |
 | `dividir_train_test` | Separa un DataFrame en conjuntos de entrenamiento y prueba |
+| `guardar_csv` | Guarda un DataFrame en formato CSV |
+| `guardar_json` | Guarda un DataFrame en formato JSON |
+| `eliminar_outliers` | Filtra outliers usando el método IQR |
+| `evaluar_modelo_binario` | Matriz de confusión, ROC y métricas básicas |
+| `entrenar_modelo_con_split` | Entrena y evalúa un modelo tras dividir los datos |
 
 Los notebooks de la carpeta `ejemplos` muestran cómo utilizar estas funciones
 para tareas habituales.
