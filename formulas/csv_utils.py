@@ -78,7 +78,13 @@ def cargar_csv(
     """
 
     # Permitir recibir "modo" dentro de kwargs y hacerlo case-insensitive
-    modo = str(kwargs.pop("modo", modo)).lower()
+    # El usuario podría pasar la clave con mayúsculas o mezclada, por lo que
+    # buscamos la primera coincidencia ignorando el caso y eliminamos esa
+    # entrada de ``kwargs`` antes de llamar a :func:`pandas.read_csv`.
+    for key in list(kwargs.keys()):
+        if key.lower() == "modo":
+            modo = str(kwargs.pop(key)).lower()
+            break
 
     ruta_archivo = os.path.abspath(nombre_archivo)
     nombre_archivo_simple = os.path.basename(ruta_archivo)
