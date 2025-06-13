@@ -6,27 +6,50 @@ import os
 import pandas as pd
 import logging
 
+try:
+    import chardet
+except Exception:  # pragma: no cover - library optional
+    chardet = None
+
 from .pandas_transform import limpiar_nombres
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-def detectar_delimitador(ruta_archivo: Union[str, os.PathLike]) -> str:
-    """
-    Detectar automáticamente el delimitador del archivo.
-    """
-    separadores_comunes = [',', ';', '\t', '|']
-    
+
+def detectar_encoding(ruta_archivo: Union[str, os.PathLike]) -> str:
+    """Detectar automáticamente la codificación de un archivo."""
     try:
-        with open(ruta_archivo, 'r', encoding='latin-1') as f:
-            sample = f.read(2048)
-            for sep in separadores_comunes:
-                if sep in sample:
-                    return sep
-            return ','  # default delimiter if none found
-    except Exception as e:
+        with open(ruta_archivo, "rb") as f:
+            sample = f.read(4096)
+        if chardet:
+            resultado = chardet.detect(sample)
+            if resultado.get("encoding"):
+                return resultado["encoding"]
+    except Exception as e:  # pragma: no cover - detección fallida
+        logger.warning(f"Error al detectar encoding: {str(e)}")
+    return "utf-8"
+
+def detectar_delimitador(ruta_archivo: Union[str, os.PathLike]) -> str:
+    """Detectar automáticamente el delimitador del archivo."""
+
+    try:
+        with open(ruta_archivo, "rb") as f:
+            sample_bytes = f.read(4096)
+
+        encoding = "utf-8"
+        if chardet:
+            resultado = chardet.detect(sample_bytes)
+            if resultado.get("encoding"):
+                encoding = resultado["encoding"]
+        sample = sample_bytes.decode(encoding, errors="replace")
+
+        # Utilizar csv.Sniffer para determinar el delimitador
+        dialect = csv.Sniffer().sniff(sample)
+        return dialect.delimiter
+    except Exception as e:  # pragma: no cover - detección fallida
         logger.warning(f"Error al detectar delimitador: {str(e)}")
-        return None
+        return ","
 
 def cargar_csv(
     nombre_archivo: Union[str, os.PathLike], 
@@ -37,23 +60,24 @@ def cargar_csv(
     Cargar un CSV de forma automática usando parámetros optimizados.
     """
     try:
-        # Verificar si el archivo existe
-        if not os.path.exists(nombre_archivo):
+        ruta_archivo = os.path.abspath(nombre_archivo)
+        if not os.path.exists(ruta_archivo):
             logger.error(f"El archivo {nombre_archivo} no existe")
             return None
 
-        # Parámetros por defecto que sabemos que funcionan
-        default_params = {
-            'encoding': 'latin-1',
-            'sep': None,
-            'engine': 'python'
+        params = {
+            "encoding": None,
+            "sep": None,
+            "engine": "python",
         }
-        
-        # Actualizar con kwargs si se proporcionan
-        default_params.update(kwargs)
-        
-        # Intentar cargar el archivo
-        df = pd.read_csv(nombre_archivo, **default_params)
+        params.update(kwargs)
+
+        if params["encoding"] is None:
+            params["encoding"] = detectar_encoding(ruta_archivo)
+        if params["sep"] is None:
+            params["sep"] = detectar_delimitador(ruta_archivo)
+
+        df = pd.read_csv(ruta_archivo, **params)
         
         if imprimir:
             logger.info(f"Archivo CSV cargado exitosamente")
