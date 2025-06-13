@@ -55,3 +55,33 @@ def cargar_json(
         logger.error("Error al cargar el archivo: %s", str(e))
 
 
+def guardar_json(
+    df: pd.DataFrame,
+    ruta_archivo: Union[str, os.PathLike],
+    orient: str = "records",
+    lines: bool = False,
+    **kwargs,
+) -> None:
+    """Guardar un :class:`pandas.DataFrame` en formato JSON.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Datos que se escribirán en el archivo.
+    ruta_archivo : str or PathLike
+        Destino del archivo JSON.
+    orient : str, optional
+        Orientación del JSON a generar, por defecto ``"records"``.
+    lines : bool, optional
+        Si se debe escribir cada registro en una línea.
+    **kwargs : dict, optional
+        Parámetros adicionales para :func:`pandas.DataFrame.to_json`.
+
+    Examples
+    --------
+    >>> guardar_json(df, "salida.json")
+    """
+    ruta = os.path.abspath(ruta_archivo)
+    df.to_json(ruta, orient=orient, lines=lines, force_ascii=False, **kwargs)
+
+

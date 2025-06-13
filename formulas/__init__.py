@@ -2,8 +2,8 @@
 __version__ = "0.1.0"
 
 from .excel_utils import leer_excel, escribir_excel, cargar_excel
-from .csv_utils import cargar_csv, limpiar_columnas
-from .json_utils import cargar_json
+from .csv_utils import cargar_csv, limpiar_columnas, guardar_csv
+from .json_utils import cargar_json, guardar_json
 from .sql_utils import crear_conexion, leer_query, escribir_df
 from .pandas_transform import (
     combinar,
@@ -11,6 +11,7 @@ from .pandas_transform import (
     limpiar_nombres,
     convertir_a_datetime,
     detectar_outliers_iqr,
+    eliminar_outliers,
     eliminar_duplicados,
     imputar_nulos,
     codificar_onehot,
@@ -44,6 +45,8 @@ from .modelos import (
     entrenar_mlp,
     entrenar_random_forest,
     evaluar_modelo,
+    evaluar_modelo_binario,
+    entrenar_modelo_con_split,
 )
 
 __all__ = [
@@ -52,13 +55,16 @@ __all__ = [
     "cargar_excel",
     "escribir_excel",
     "cargar_csv",
+    "guardar_csv",
     "limpiar_columnas",
     "cargar_json",
+    "guardar_json",
     "crear_conexion",
     "leer_query",
     "escribir_df",
     "convertir_a_datetime",
     "detectar_outliers_iqr",
+    "eliminar_outliers",
     "eliminar_duplicados",
     "imputar_nulos",
     "codificar_onehot",
@@ -90,5 +96,7 @@ __all__ = [
     "entrenar_mlp",
     "entrenar_random_forest",
     "evaluar_modelo",
+    "evaluar_modelo_binario",
+    "entrenar_modelo_con_split",
 ]
 

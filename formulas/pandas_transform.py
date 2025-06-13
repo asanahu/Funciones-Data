@@ -162,6 +162,33 @@ def detectar_outliers_iqr(df: pd.DataFrame, columna: str, factor: float = 1.5) -
     return (df[columna] < lower) | (df[columna] > upper)
 
 
+def eliminar_outliers(
+    df: pd.DataFrame, columna: str, factor: float = 1.5
+) -> pd.DataFrame:
+    """Eliminar filas con outliers de ``columna`` usando el método IQR.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame de entrada.
+    columna : str
+        Columna sobre la que se evaluarán los outliers.
+    factor : float, optional
+        Multiplicador del rango intercuartílico, por defecto ``1.5``.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame sin los registros considerados outliers.
+
+    Examples
+    --------
+    >>> df_sin_outliers = eliminar_outliers(df, "ventas")
+    """
+    mascara = detectar_outliers_iqr(df, columna, factor=factor)
+    return df.loc[~mascara].reset_index(drop=True)
+
+
 def eliminar_duplicados(
     df: pd.DataFrame, subset: Optional[Union[str, Iterable[str]]] = None,
     keep: str = "first", mensaje: bool = True

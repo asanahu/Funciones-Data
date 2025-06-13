@@ -77,3 +77,23 @@ def limpiar_columnas(df: pd.DataFrame, formato: str = "simple") -> pd.DataFrame:
     return limpiar_nombres(df, formato=formato)
 
 
+def guardar_csv(df: pd.DataFrame, ruta_archivo: Union[str, os.PathLike], **kwargs) -> None:
+    """Guardar un :class:`pandas.DataFrame` en un archivo CSV.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame a guardar.
+    ruta_archivo : str or PathLike
+        Ubicación donde se escribirá el CSV.
+    **kwargs : dict, optional
+        Parámetros adicionales para :func:`pandas.DataFrame.to_csv`.
+
+    Examples
+    --------
+    >>> guardar_csv(df, "salida.csv")
+    """
+    ruta = os.path.abspath(ruta_archivo)
+    df.to_csv(ruta, index=False, **kwargs)
+
+
