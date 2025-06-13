@@ -55,15 +55,30 @@ def detectar_delimitador(ruta_archivo: Union[str, os.PathLike]) -> str:
         return ","
 
 def cargar_csv(
-    nombre_archivo: Union[str, os.PathLike], 
+    nombre_archivo: Union[str, os.PathLike],
     imprimir: bool = True,
     modo: str = "auto",  # 'auto', 'print' o 'logger'
-    **kwargs
+    **kwargs,
 ) -> Union[pd.DataFrame, None]:
-    """Carga automática de un CSV con detección de codificación y delimitador."""
-    
-    # 👇 Eliminar 'modo' de kwargs para que no se pase por error a read_csv
-    modo = kwargs.pop("modo", modo)
+    """Carga un CSV con detección de delimitador y codificación.
+
+    Parameters
+    ----------
+    nombre_archivo : str or PathLike
+        Ruta del archivo CSV a leer.
+    imprimir : bool, optional
+        Si ``True`` muestra información básica del DataFrame cargado.
+    modo : {"auto", "print", "logger"}, optional
+        Controla cómo se muestran los mensajes. En ``"auto"`` se
+        imprime por pantalla solo si se está en un entorno interactivo.
+        Con ``"print"`` se utiliza siempre ``print`` y con ``"logger"`` se
+        envían los mensajes al ``logger``.
+    **kwargs : dict, optional
+        Parámetros adicionales que se pasarán a :func:`pandas.read_csv`.
+    """
+
+    # Permitir recibir "modo" dentro de kwargs y hacerlo case-insensitive
+    modo = str(kwargs.pop("modo", modo)).lower()
 
     ruta_archivo = os.path.abspath(nombre_archivo)
     nombre_archivo_simple = os.path.basename(ruta_archivo)
@@ -73,7 +88,10 @@ def cargar_csv(
         usar_print = True
     elif modo == "logger":
         usar_print = False
+    elif modo == "auto":
+        usar_print = en_modo_interactivo()
     else:
+        logger.warning("Modo no reconocido, utilizando 'auto'.")
         usar_print = en_modo_interactivo()
 
     if not os.path.exists(ruta_archivo):
@@ -81,13 +99,13 @@ def cargar_csv(
         return None
 
     params = {
-        "encoding": kwargs.get("encoding", detectar_encoding(ruta_archivo)),
-        "sep": kwargs.get("sep", detectar_delimitador(ruta_archivo)),
+        "encoding": kwargs.pop("encoding", detectar_encoding(ruta_archivo)),
+        "sep": kwargs.pop("sep", detectar_delimitador(ruta_archivo)),
         "engine": "python",
     }
 
     try:
-        df = pd.read_csv(ruta_archivo, **params)
+        df = pd.read_csv(ruta_archivo, **params, **kwargs)
 
         if imprimir:
             msg = [

@@ -62,6 +62,9 @@ df = cargar_csv("datos.csv")
 resumen = nulos(df)
 df = convertir_a_datetime(df, "fecha")
 grafico_lineas(df, "fecha", "ventas", titulo="Ventas diarias")
+
+# Forzar la salida con ``print`` incluso fuera de un notebook
+df_print = cargar_csv("datos.csv", modo="print")
 ```
 
 grafico_barras(df, "producto", "ventas")
