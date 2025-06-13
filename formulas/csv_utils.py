@@ -5,6 +5,7 @@ import csv
 import os
 import pandas as pd
 import logging
+import sys
 
 try:
     import chardet
@@ -16,6 +17,8 @@ from .pandas_transform import limpiar_nombres
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+def en_modo_interactivo() -> bool:
+    return hasattr(sys, 'ps1') or sys.flags.interactive or 'ipykernel' in sys.modules
 
 def detectar_encoding(ruta_archivo: Union[str, os.PathLike]) -> str:
     """Detectar automáticamente la codificación de un archivo."""
@@ -54,43 +57,55 @@ def detectar_delimitador(ruta_archivo: Union[str, os.PathLike]) -> str:
 def cargar_csv(
     nombre_archivo: Union[str, os.PathLike], 
     imprimir: bool = True,
+    modo: str = "auto",  # 'auto', 'print' o 'logger'
     **kwargs
-) -> pd.DataFrame:
-    """
-    Cargar un CSV de forma automática usando parámetros optimizados.
-    """
-    try:
-        ruta_archivo = os.path.abspath(nombre_archivo)
-        if not os.path.exists(ruta_archivo):
-            logger.error(f"El archivo {nombre_archivo} no existe")
-            return None
+) -> Union[pd.DataFrame, None]:
+    """Carga automática de un CSV con detección de codificación y delimitador."""
+    
+    # 👇 Eliminar 'modo' de kwargs para que no se pase por error a read_csv
+    modo = kwargs.pop("modo", modo)
 
-        params = {
-            "encoding": None,
-            "sep": None,
-            "engine": "python",
-        }
-        params.update(kwargs)
+    ruta_archivo = os.path.abspath(nombre_archivo)
+    nombre_archivo_simple = os.path.basename(ruta_archivo)
 
-        if params["encoding"] is None:
-            params["encoding"] = detectar_encoding(ruta_archivo)
-        if params["sep"] is None:
-            params["sep"] = detectar_delimitador(ruta_archivo)
+    # Determinar si usamos print o logger
+    if modo == "print":
+        usar_print = True
+    elif modo == "logger":
+        usar_print = False
+    else:
+        usar_print = en_modo_interactivo()
 
-        df = pd.read_csv(ruta_archivo, **params)
-        
-        if imprimir:
-            logger.info(f"Archivo CSV cargado exitosamente")
-            logger.info(f"Dimensiones: {df.shape}")
-            logger.info(f"Columnas: {list(df.columns)}")
-            logger.info("\nPrimeras filas:")
-            logger.info(f"\n{df.head()}")
-        
-        return df
-        
-    except Exception as e:
-        logger.error(f"Error al cargar el archivo: {str(e)}")
+    if not os.path.exists(ruta_archivo):
+        logger.error(f"❌ El archivo {nombre_archivo} no existe")
         return None
+
+    params = {
+        "encoding": kwargs.get("encoding", detectar_encoding(ruta_archivo)),
+        "sep": kwargs.get("sep", detectar_delimitador(ruta_archivo)),
+        "engine": "python",
+    }
+
+    try:
+        df = pd.read_csv(ruta_archivo, **params)
+
+        if imprimir:
+            msg = [
+                f"✅ Archivo CSV cargado: {nombre_archivo_simple}",
+                f"📊 Dimensiones: {df.shape[0]} filas × {df.shape[1]} columnas",
+                f"📁 Columnas: {', '.join(df.columns[:5])}... ({len(df.columns)} columnas en total)",
+                "\n🔍 Primeras filas:",
+                str(df.head())
+            ]
+            for line in msg:
+                print(line) if usar_print else logger.info(line)
+
+        return df
+
+    except Exception as e:
+        logger.error(f"❌ Error al cargar el archivo '{nombre_archivo_simple}': {str(e)}")
+        return None
+
 
 
 
