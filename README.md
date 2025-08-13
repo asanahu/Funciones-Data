@@ -1,6 +1,7 @@
 # Repositorio de fórmulas para ETL y análisis de datos
+![CI](https://github.com/OWNER/Funciones-Data/actions/workflows/ci.yml/badge.svg)
 
-Este proyecto agrupa funciones reutilizables para manipulación y exploración de 
+Este proyecto agrupa funciones reutilizables para manipulación y exploración de
 datos con **pandas**. Las utilidades están organizadas en el paquete `formulas` y
 se acompañan de algunos notebooks de ejemplo.
 
