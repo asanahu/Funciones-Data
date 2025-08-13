@@ -39,11 +39,16 @@ para tareas habituales.
 
 ## Instalación
 
-1. Clona este repositorio.
-2. Instala las dependencias:
+Instala la librería directamente con pip:
 
 ```bash
-pip install -r requirements.txt
+pip install formulas
+```
+
+Si prefieres instalarla desde el código fuente:
+
+```bash
+pip install .
 ```
 
 ## Uso rápido
