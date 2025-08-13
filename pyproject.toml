@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "formulas"
+version = "0.1.0"
+description = "Funciones reutilizables para ETL y análisis de datos."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+dependencies = [
+    "pandas",
+    "openpyxl",
+    "sqlalchemy",
+    "seaborn",
+    "matplotlib",
+    "plotly",
+    "scikit-learn",
+    "chardet",
+]
