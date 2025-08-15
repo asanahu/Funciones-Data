@@ -159,3 +159,13 @@ dependencia transitiva lo incluye, el riesgo se considera bajo y está
 mitigado. Se recomienda mantener las dependencias actualizadas y revisar
 periódicamente las alertas de seguridad.
 
+## Formateo de Código
+
+Durante el desarrollo, puedes aplicar formateo automático con **black** e **isort**:
+
+```bash
+pip install black isort
+black formulas tests
+isort formulas tests
+```
+
