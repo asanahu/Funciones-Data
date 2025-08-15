@@ -152,3 +152,10 @@ print(metricas)
 De forma análoga pueden usarse `entrenar_mlp` o `entrenar_random_forest`
 pasando los parámetros deseados.
 
+## Riesgos de Seguridad Conocidos
+
+El proyecto no depende de forma directa del paquete `ecdsa`. Si alguna
+dependencia transitiva lo incluye, el riesgo se considera bajo y está
+mitigado. Se recomienda mantener las dependencias actualizadas y revisar
+periódicamente las alertas de seguridad.
+
