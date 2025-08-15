@@ -1,10 +1,11 @@
 """Funciones para gráficos con matplotlib, seaborn y plotly."""
 
-import matplotlib.pyplot as plt
-import numpy as np
+
 import pandas as pd
-import plotly.express as px
+import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
+import plotly.express as px
 
 
 def grafico_lineas(df: pd.DataFrame, x: str, y: str, titulo: str = "") -> None:
@@ -76,9 +77,7 @@ def grafico_dispersion(df: pd.DataFrame, x: str, y: str, titulo: str = "") -> No
     plt.show()
 
 
-def grafico_histograma(
-    df: pd.DataFrame, columna: str, bins: int = 10, titulo: str = ""
-) -> None:
+def grafico_histograma(df: pd.DataFrame, columna: str, bins: int = 10, titulo: str = "") -> None:
     """Mostrar un histograma de una columna.
 
     Parameters
@@ -317,3 +316,5 @@ def boxplot_variables(x: pd.DataFrame, rotacion: int = 90) -> None:
     plt.xlabel("Nombre de la variable")
     plt.tight_layout()
     plt.show()
+
+

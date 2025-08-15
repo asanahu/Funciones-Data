@@ -1,12 +1,11 @@
 """Funciones para trabajar con archivos CSV."""
 
-import csv
-import logging
-import os
-import sys
 from typing import Union
-
+import csv
+import os
 import pandas as pd
+import logging
+import sys
 
 try:
     import chardet
@@ -18,10 +17,8 @@ from .pandas_transform import limpiar_nombres
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-
 def en_modo_interactivo() -> bool:
-    return hasattr(sys, "ps1") or sys.flags.interactive or "ipykernel" in sys.modules
-
+    return hasattr(sys, 'ps1') or sys.flags.interactive or 'ipykernel' in sys.modules
 
 def detectar_encoding(ruta_archivo: Union[str, os.PathLike]) -> str:
     """Detectar automáticamente la codificación de un archivo."""
@@ -35,7 +32,6 @@ def detectar_encoding(ruta_archivo: Union[str, os.PathLike]) -> str:
     except Exception as e:  # pragma: no cover - detección fallida
         logger.warning(f"Error al detectar encoding: {str(e)}")
     return "utf-8"
-
 
 def detectar_delimitador(ruta_archivo: Union[str, os.PathLike]) -> str:
     """Detectar automáticamente el delimitador del archivo."""
@@ -57,7 +53,6 @@ def detectar_delimitador(ruta_archivo: Union[str, os.PathLike]) -> str:
     except Exception as e:  # pragma: no cover - detección fallida
         logger.warning(f"Error al detectar delimitador: {str(e)}")
         return ","
-
 
 def cargar_csv(
     nombre_archivo: Union[str, os.PathLike],
@@ -124,7 +119,7 @@ def cargar_csv(
                 f"📊 Dimensiones: {df.shape[0]} filas × {df.shape[1]} columnas",
                 f"📁 Columnas: {', '.join(df.columns[:5])}... ({len(df.columns)} columnas en total)",
                 "\n🔍 Primeras filas:",
-                str(df.head()),
+                str(df.head())
             ]
             for line in msg:
                 print(line) if usar_print else logger.info(line)
@@ -132,10 +127,10 @@ def cargar_csv(
         return df
 
     except Exception as e:
-        logger.error(
-            f"❌ Error al cargar el archivo '{nombre_archivo_simple}': {str(e)}"
-        )
+        logger.error(f"❌ Error al cargar el archivo '{nombre_archivo_simple}': {str(e)}")
         return None
+
+
 
 
 def limpiar_columnas(df: pd.DataFrame, formato: str = "simple") -> pd.DataFrame:
@@ -160,9 +155,7 @@ def limpiar_columnas(df: pd.DataFrame, formato: str = "simple") -> pd.DataFrame:
     return limpiar_nombres(df, formato=formato)
 
 
-def guardar_csv(
-    df: pd.DataFrame, ruta_archivo: Union[str, os.PathLike], **kwargs
-) -> None:
+def guardar_csv(df: pd.DataFrame, ruta_archivo: Union[str, os.PathLike], **kwargs) -> None:
     """Guardar un :class:`pandas.DataFrame` en un archivo CSV.
 
     Parameters
@@ -180,3 +173,5 @@ def guardar_csv(
     """
     ruta = os.path.abspath(ruta_archivo)
     df.to_csv(ruta, index=False, **kwargs)
+
+

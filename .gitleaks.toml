@@ -1,8 +1,0 @@
-title = "PlanifitAI secret rules (mínimo)"
-[allowlist]
-description = "Archivos permitidos (tests/docs)"
-regexes = [
-  '''\.secrets\.baseline$''',
-  '''tests?/.*\.(json|txt|ya?ml|md)$''',
-  '''README\.md$'''
-]
