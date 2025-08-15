@@ -77,4 +77,3 @@ def estandarizar_datos(
     scaler = StandardScaler()
     df[list(columnas)] = scaler.fit_transform(df[list(columnas)])
     return df, scaler
-

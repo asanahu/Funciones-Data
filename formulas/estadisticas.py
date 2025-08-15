@@ -1,15 +1,17 @@
 """Cálculos estadísticos básicos y avanzados."""
 
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy.stats import shapiro, probplot, norm
-
 from typing import Iterable, Optional
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from scipy.stats import norm, probplot, shapiro
 
-def nulos(df: pd.DataFrame, ordenar_por: str = "Nulos", imprimir: bool = True) -> pd.DataFrame:
+
+def nulos(
+    df: pd.DataFrame, ordenar_por: str = "Nulos", imprimir: bool = True
+) -> pd.DataFrame:
     """Resumen de valores nulos, porcentaje y valores únicos.
 
     Parameters
@@ -34,11 +36,13 @@ def nulos(df: pd.DataFrame, ordenar_por: str = "Nulos", imprimir: bool = True) -
     porcentaje = (nulos_por_columna / len(df)) * 100
     valores_unicos = df.nunique()
     filas_dup = df.duplicated().sum()
-    resumen = pd.DataFrame({
-        "Nulos": nulos_por_columna,
-        "Porcentaje Nulos": porcentaje.round(2),
-        "Valores únicos": valores_unicos,
-    })
+    resumen = pd.DataFrame(
+        {
+            "Nulos": nulos_por_columna,
+            "Porcentaje Nulos": porcentaje.round(2),
+            "Valores únicos": valores_unicos,
+        }
+    )
     resumen.loc["Duplicados"] = [filas_dup, (filas_dup / len(df)) * 100, "N/A"]
     if ordenar_por in resumen.columns:
         resumen = resumen.sort_values(by=ordenar_por, ascending=False)
@@ -48,7 +52,9 @@ def nulos(df: pd.DataFrame, ordenar_por: str = "Nulos", imprimir: bool = True) -
     return resumen
 
 
-def describir_columnas(df: pd.DataFrame, columnas: Iterable[str]) -> dict[str, pd.DataFrame]:
+def describir_columnas(
+    df: pd.DataFrame, columnas: Iterable[str]
+) -> dict[str, pd.DataFrame]:
     """Mostrar y resumir información de un conjunto de columnas.
 
     Parameters
@@ -75,10 +81,15 @@ def describir_columnas(df: pd.DataFrame, columnas: Iterable[str]) -> dict[str, p
         top = df[col].value_counts().head(10)
         for valor, cuenta in top.items():
             print(f"{valor:<20} {cuenta}")
-        resumen[col] = top.reset_index().rename(columns={"index": "valor", col: "frecuencia"})
+        resumen[col] = top.reset_index().rename(
+            columns={"index": "valor", col: "frecuencia"}
+        )
     return resumen
 
-def matriz_correlacion(df: pd.DataFrame, imprimir: bool = False) -> Optional[pd.DataFrame]:
+
+def matriz_correlacion(
+    df: pd.DataFrame, imprimir: bool = False
+) -> Optional[pd.DataFrame]:
     """Calcular y mostrar la matriz de correlación para columnas numéricas.
 
     Parameters
@@ -95,7 +106,9 @@ def matriz_correlacion(df: pd.DataFrame, imprimir: bool = False) -> Optional[pd.
     """
     df_num = df.select_dtypes(include=["number"])
     if df_num.shape[1] < 2:
-        print("El DataFrame no tiene suficientes columnas numéricas para calcular la correlación.")
+        print(
+            "El DataFrame no tiene suficientes columnas numéricas para calcular la correlación."
+        )
         return None
     corr = df_num.corr()
     if imprimir:
@@ -223,7 +236,9 @@ def resumen_columnas(df: pd.DataFrame) -> pd.DataFrame:
     return column_info
 
 
-def comprueba_normalidad(df: pd.DataFrame, titulo: str = "Comprobación de normalidad") -> pd.DataFrame:
+def comprueba_normalidad(
+    df: pd.DataFrame, titulo: str = "Comprobación de normalidad"
+) -> pd.DataFrame:
     """Evaluar la normalidad de cada columna numérica de ``df``.
 
     Se representan los *Q-Q plots* de todas las columnas y se calcula el
@@ -266,9 +281,7 @@ def comprueba_normalidad(df: pd.DataFrame, titulo: str = "Comprobación de norma
     plt.suptitle(titulo)
     plt.show()
 
-    resultados = (
-        pd.DataFrame(resultados, index=["Test Statistic", "p-value"]).transpose()
-    )
+    resultados = pd.DataFrame(
+        resultados, index=["Test Statistic", "p-value"]
+    ).transpose()
     return resultados
-
-

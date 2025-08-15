@@ -2,25 +2,24 @@
 
 from __future__ import annotations
 
-from typing import Optional, Sequence, Any
+from typing import Any, Optional, Sequence
 
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
+    RocCurveDisplay,
     accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
     classification_report,
     confusion_matrix,
-    RocCurveDisplay,
+    f1_score,
+    precision_score,
+    recall_score,
 )
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
 
 
 def entrenar_regresion_logistica(
@@ -229,7 +228,9 @@ def evaluar_modelo_binario(
     >>> metricas = evaluar_modelo_binario(modelo, X_test, y_test)
     """
     y_pred = model.predict(X_test)
-    y_prob = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
+    y_prob = (
+        model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
+    )
 
     cm = confusion_matrix(y_test, y_pred)
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
