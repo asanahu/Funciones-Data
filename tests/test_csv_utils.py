@@ -1,4 +1,3 @@
-import pandas as pd
 from formulas.csv_utils import cargar_csv
 
 
