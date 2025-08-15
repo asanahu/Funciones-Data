@@ -1,12 +1,14 @@
 """Funciones genéricas para detección de archivos."""
 
 import os
-import pandas as pd
 from typing import Union
+
+import pandas as pd
+
 from .csv_utils import cargar_csv
-from .json_utils import cargar_json
 from .excel_utils import cargar_excel
 from .html_utils import cargar_html
+from .json_utils import cargar_json
 
 
 def cargar_archivo(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
@@ -49,4 +51,3 @@ def cargar_archivo(nombre_archivo: Union[str, os.PathLike]) -> pd.DataFrame:
     if extension == ".sav":
         return pd.read_spss(ruta_archivo)
     raise ValueError(f"Formato de archivo no soportado: {extension}")
-

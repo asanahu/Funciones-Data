@@ -1,9 +1,9 @@
 """Transformaciones comunes con pandas."""
 
-from typing import Iterable, Optional, Union, Callable
+import logging
+from typing import Callable, Iterable, Optional, Union
 
 import pandas as pd
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -94,10 +94,8 @@ def limpiar_nombres(df: pd.DataFrame, formato: str = "snake_case") -> pd.DataFra
         raise ValueError("formato debe ser 'simple' o 'snake_case'")
     df.columns = df.columns.str.strip().str.lower()
     if formato == "snake_case":
-        df.columns = (
-            df.columns
-            .str.replace(" ", "_")
-            .str.replace(r"[^a-z0-9_]+", "", regex=True)
+        df.columns = df.columns.str.replace(" ", "_").str.replace(
+            r"[^a-z0-9_]+", "", regex=True
         )
     return df
 
@@ -111,7 +109,9 @@ def limpiar_columnas(df: pd.DataFrame, formato: str = "simple") -> pd.DataFrame:
     return limpiar_nombres(df, formato=formato)
 
 
-def convertir_a_datetime(df: pd.DataFrame, columnas: Union[str, Iterable[str]], formato: Optional[str] = None) -> pd.DataFrame:
+def convertir_a_datetime(
+    df: pd.DataFrame, columnas: Union[str, Iterable[str]], formato: Optional[str] = None
+) -> pd.DataFrame:
     """Convertir columnas a tipo ``datetime``.
 
     Parameters
@@ -137,7 +137,9 @@ def convertir_a_datetime(df: pd.DataFrame, columnas: Union[str, Iterable[str]], 
     return df
 
 
-def detectar_outliers_iqr(df: pd.DataFrame, columna: str, factor: float = 1.5) -> pd.Series:
+def detectar_outliers_iqr(
+    df: pd.DataFrame, columna: str, factor: float = 1.5
+) -> pd.Series:
     """Detectar outliers en una columna utilizando el método IQR.
 
     Parameters
@@ -190,8 +192,10 @@ def eliminar_outliers(
 
 
 def eliminar_duplicados(
-    df: pd.DataFrame, subset: Optional[Union[str, Iterable[str]]] = None,
-    keep: str = "first", mensaje: bool = True
+    df: pd.DataFrame,
+    subset: Optional[Union[str, Iterable[str]]] = None,
+    keep: str = "first",
+    mensaje: bool = True,
 ) -> pd.DataFrame:
     """Eliminar filas duplicadas del DataFrame.
 
@@ -288,5 +292,3 @@ def codificar_onehot(df: pd.DataFrame, columnas: Iterable[str]) -> pd.DataFrame:
     >>> df = codificar_onehot(df, ["genero", "pais"])
     """
     return pd.get_dummies(df, columns=list(columnas), drop_first=False)
-
-

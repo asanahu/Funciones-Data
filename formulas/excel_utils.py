@@ -1,10 +1,10 @@
 """Utilidades para archivos Excel."""
 
+import logging
+import os
 from typing import Optional, Union
 
-import os
 import pandas as pd
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +65,9 @@ def cargar_excel(
 leer_excel = cargar_excel
 
 
-def escribir_excel(df: pd.DataFrame, ruta_archivo: Union[str, os.PathLike], hoja: str = "Sheet1") -> None:
+def escribir_excel(
+    df: pd.DataFrame, ruta_archivo: Union[str, os.PathLike], hoja: str = "Sheet1"
+) -> None:
     """Guardar un :class:`pandas.DataFrame` en un archivo de Excel.
 
     Parameters
@@ -83,5 +85,3 @@ def escribir_excel(df: pd.DataFrame, ruta_archivo: Union[str, os.PathLike], hoja
     """
     with pd.ExcelWriter(ruta_archivo) as writer:
         df.to_excel(writer, sheet_name=hoja, index=False)
-
-
