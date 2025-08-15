@@ -1,6 +1,6 @@
 pandas
 openpyxl
-sqlalchemy
+SQLAlchemy==2.0.43      # pinned for MVP stability
 seaborn
 matplotlib
 plotly
