@@ -47,9 +47,7 @@ def leer_query(sql: str, engine: Any) -> pd.DataFrame:
     return df
 
 
-def escribir_df(
-    df: pd.DataFrame, tabla: str, engine: Any, if_exists: str = "replace"
-) -> None:
+def escribir_df(df: pd.DataFrame, tabla: str, engine: Any, if_exists: str = "replace") -> None:
     """Guardar un DataFrame en la tabla indicada.
 
     Parameters
@@ -69,3 +67,5 @@ def escribir_df(
     """
     with engine.connect() as conn:
         df.to_sql(tabla, conn, if_exists=if_exists, index=False)
+
+

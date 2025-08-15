@@ -1,10 +1,10 @@
 """Funciones para trabajar con archivos o URLs de HTML."""
 
-import logging
-import os
 from typing import List, Union
 
+import os
 import pandas as pd
+import logging
 
 logger = logging.getLogger(__name__)
 
